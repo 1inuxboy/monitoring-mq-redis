@@ -74,6 +74,7 @@ services:
     environment:
       - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY:-} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY:-}
       - TZ=${TZ}
+      - NAMESRV_ADDR=${ROCKETMQ_NAMESRV_ADDR:-}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
