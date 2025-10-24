@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  redis-exporter-1:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter-6379
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    command:
+      - --redis.addr=redis://${REDIS_HOST:-localhost:6379}
+      - --redis.password=${REDIS_PASSWORD:-}
+      - --export-client-port=9121
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "9121:9121"
+
+  redis-exporter-2:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter-6380
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    command:
+      - --redis.addr=redis://${REDIS_HOST:-localhost:6380}
+      - --redis.password=${REDIS_PASSWORD:-}
+      - --export-client-port=9122
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "9122:9122"
+
+  rocketmq-exporter:
+    image: apache/rocketmq-exporter:latest
+    container_name: rocketmq-exporter
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    command:
+      - --rocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-}
+      - --rocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false}
+      - --rocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY:-}
+      - --rocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY:-}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5557:5557"
