@@ -37,21 +37,23 @@ services:
     image: oliver006/redis_exporter:latest
     container_name: redis-exporter
     restart: unless-stopped
-    network_mode: host
     command:
       - --redis.addr=redis://${REDIS_HOST:-localhost}:${REDIS_PORT:-6379}
       - --redis.password=${REDIS_PASSWORD:-}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "9121:9121"
 
   rocketmq-exporter:
     image: apache/rocketmq-exporter:latest
     container_name: rocketmq-exporter
     restart: unless-stopped
-    network_mode: host
     environment:
       - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-localhost:9876} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY:-} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY:-}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5557:5557"
