@@ -6,9 +6,10 @@ services:
     restart: unless-stopped
     container_name: prometheus
     network_mode: host
+    environment:
+      - TZ=${TZ}
     command:
       - --config.file=/etc/prometheus/prometheus.yml
-      - --TZ=${TZ}
       - --storage.tsdb.path=/prometheus
       - --storage.tsdb.retention.time=3d
       - --web.enable-lifecycle
