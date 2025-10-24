@@ -10,7 +10,7 @@ services:
     command:
       - --redis.addr=redis://${REDIS_HOST_1:-localhost:6379}
       - --redis.password=${REDIS_PASSWORD_1:-}
-      - --export-client-port=9121
+      - --web.listen-address=:9121
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -29,7 +29,7 @@ services:
     command:
       - --redis.addr=redis://${REDIS_HOST_2:-localhost:6380}
       - --redis.password=${REDIS_PASSWORD_2:-}
-      - --export-client-port=9122
+      - --web.listen-address=:9122
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
