@@ -161,84 +161,10 @@ docker-compose down && docker-compose -f docker-compose-exporter.yml down
 - 自动配置 Prometheus 作为数据源
 - 可以在此目录下添加更多的 provisioning 配置
 
-## 服务说明
+Dashboard使用json文件进行导入:
+- `config/prometheus/dashboard/redis.json`
+- `config/prometheus/dashboard/rocketmq.json`
 
-### 监控服务（docker-compose.yml）
-
-#### Prometheus
-- **端口**：9090
-- **数据保留**：3天
-- **采集间隔**：15秒
-- **网络模式**：host
-- **监控目标**：
-  - Prometheus 自身
-  - Redis Exporter (9121, 9122)
-  - RocketMQ Exporter (5557)
-
-#### Grafana
-- **端口**：3000
-- **网络模式**：host
-- **已自动配置 Prometheus 数据源**
-- **数据持久化存储**
-- **默认账号**：通过 `.env` 配置
-
-### Exporter 服务（docker-compose-exporter.yml）
-
-#### Redis Exporter 1
-- **容器名称**：redis-exporter-6379
-- **端口**：9121
-- **监控目标**：由 `REDIS_HOST_1` 指定的 Redis 实例
-- **Profile**：`redis-exporter-1` 或 `all-redis-exporter`
-
-#### Redis Exporter 2
-- **容器名称**：redis-exporter-6380
-- **端口**：9122
-- **监控目标**：由 `REDIS_HOST_2` 指定的 Redis 实例
-- **Profile**：`redis-exporter-2` 或 `all-redis-exporter`
-
-#### RocketMQ Exporter
-- **容器名称**：rocketmq-exporter
-- **端口**：5557
-- **监控目标**：由 `ROCKETMQ_NAMESRV_ADDR` 指定的 RocketMQ 集群
-- **Profile**：`rocketmq-exporter`
-
-## 架构设计
-
-### 为什么分离 Exporter？
-
-1. **灵活部署**：可以根据实际需求选择启动哪些 Exporter
-2. **独立管理**：Exporter 的启停不影响监控服务
-3. **资源优化**：不需要的 Exporter 可以不启动，节省资源
-4. **便于扩展**：需要监控更多 Redis 实例时，只需在 exporter 文件中添加即可
-
-### 使用 Profiles 的优势
-
-- **按需启动**：通过 `--profile` 参数精确控制启动哪些服务
-- **环境隔离**：开发环境和生产环境可以启动不同的 Exporter 组合
-- **配置统一**：所有 Exporter 配置在同一文件中，便于管理
-
-## 注意事项
-
-1. **安全性**：
-   - 请勿将 `.env` 文件提交到版本控制系统
-   - 生产环境请使用强密码
-   - 建议配置防火墙规则限制访问
-
-2. **数据持久化**：
-   - `data/` 目录包含 Prometheus 和 Grafana 的数据
-   - 该目录已在 `.gitignore` 中忽略，不会提交到仓库
-   - 该目录会在首次启动服务时自动创建
-   - 定期备份数据目录
-
-3. **网络配置**：
-   - Prometheus 和 Grafana 使用 host 网络模式
-   - Exporter 服务独立网络，通过端口映射访问
-   - 确保能够访问配置的 Redis 和 RocketMQ 服务
-
-4. **Profile 使用**：
-   - 必须使用 `--profile` 参数才能启动 Exporter 服务
-   - 可以组合多个 profile 同时启动多个 Exporter
-   - 不指定 profile 直接运行会提示没有服务启动
 
 ## 常见问题
 
@@ -380,22 +306,3 @@ docker-compose -f docker-compose-exporter.yml down
 rm -rf data/prometheus/*
 rm -rf data/grafana/*
 ```
-
-## 监控指标说明
-
-### Redis Exporter 指标
-- `redis_up`：Redis 是否在线
-- `redis_connected_clients`：连接的客户端数量
-- `redis_memory_used_bytes`：内存使用量
-- `redis_commands_processed_total`：处理的命令总数
-- 更多指标请访问：http://localhost:9121/metrics 或 http://localhost:9122/metrics
-
-### RocketMQ Exporter 指标
-- `rocketmq_broker_tps`：Broker TPS
-- `rocketmq_producer_message_size`：生产者消息大小
-- `rocketmq_consumer_tps`：消费者 TPS
-- 更多指标请访问：http://localhost:5557/metrics
-
-## 许可证
-
-MIT
