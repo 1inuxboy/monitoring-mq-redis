@@ -19,6 +19,7 @@ services:
     profiles:
       - all-redis-exporter
       - redis-exporter-1
+      - all
 
   redis-exporter-2:
     image: oliver006/redis_exporter:latest
@@ -38,6 +39,7 @@ services:
     profiles:
       - all-redis-exporter
       - redis-exporter-2
+      - all
 
   rocketmq-exporter:
     image: apache/rocketmq-exporter:latest
@@ -57,3 +59,4 @@ services:
       - "5557:5557"
     profiles:
       - rocketmq-exporter
+      - all

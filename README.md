@@ -96,7 +96,7 @@ docker-compose -f docker-compose-exporter.yml --profile redis-exporter-1 --profi
 
 **方式 6：启动所有 Exporters**
 ```bash
-docker-compose -f docker-compose-exporter.yml --profile all-redis-exporter --profile rocketmq-exporter up -d
+docker-compose -f docker-compose-exporter.yml --profile all up -d
 ```
 
 #### 查看服务状态
