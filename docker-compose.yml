@@ -3,6 +3,7 @@ version: '3.8'
 services:
   prometheus:
     image: prom/prometheus:latest
+    restart: unless-stopped
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -20,12 +21,13 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     volumes:
       - ./data/grafana:/var/lib/grafana
-      - ./config/grafana/provisioning:/etc/grafana/provisioning
+      - ./config/grafana:/etc/grafana/provisioning
     ports:
       - "3000:3000"
     depends_on:
@@ -36,6 +38,7 @@ services:
   redis-exporter:
     image: oliver006/redis_exporter:latest
     container_name: redis-exporter
+    restart: unless-stopped
     command:
       - --redis.addr=redis://${REDIS_HOST}:${REDIS_PORT}
       - --redis.password=${REDIS_PASSWORD}
@@ -45,6 +48,7 @@ services:
   rocketmq-exporter:
     image: apache/rocketmq-exporter:latest
     container_name: rocketmq-exporter
+    restart: unless-stopped
     environment:
       - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY}
     networks:
