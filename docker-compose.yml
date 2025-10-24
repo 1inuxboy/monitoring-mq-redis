@@ -1,11 +1,28 @@
 version: '3.8'
 
 services:
+  init:
+    image: alpine:latest
+    container_name: monitoring-init
+    command: |
+      sh -c "
+        mkdir -p /data/grafana /data/prometheus &&
+        chown -R 472:472 /data/grafana &&
+        chown -R 65534:65534 /data/prometheus &&
+        chmod -R 755 /data/grafana /data/prometheus &&
+        echo 'Initialization completed successfully'
+      "
+    volumes:
+      - ./data:/data
+    restart: "no"
+    
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
     container_name: prometheus
     network_mode: host
+    depends_on:
+      - init
     environment:
       - TZ=${TZ}
     command:
@@ -34,6 +51,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
+      - init
       - prometheus
 
   redis-exporter:

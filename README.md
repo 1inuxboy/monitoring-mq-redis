@@ -14,10 +14,6 @@ monitoring-mq-redis/
 ├── config/                    # 配置文件目录
 │   ├── prometheus/
 │   │   └── prometheus.yml    # Prometheus 配置文件
-│   └── grafana/
-│       └── provisioning/
-│           └── datasources/
-│               └── prometheus.yml # Grafana 数据源配置
 └── data/                      # 数据持久化目录（执行时自动创建）
     ├── prometheus/            # Prometheus 数据
     └── grafana/               # Grafana 数据
@@ -50,7 +46,12 @@ ROCKETMQ_NAMESRV_ADDR=your-rocketmq-namesrv:9876
 ROCKETMQ_ACL_ENABLE=false
 ROCKETMQ_ACL_ACCESS_KEY=
 ROCKETMQ_ACL_SECRET_KEY=
+
+# 时区配置
+TZ=your-timezone
+
 ```
+
 
 ### 2. 启动服务
 
