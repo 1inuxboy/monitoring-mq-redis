@@ -8,6 +8,7 @@ services:
     network_mode: host
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+      - --TZ=${TZ}
       - --storage.tsdb.path=/prometheus
       - --storage.tsdb.retention.time=3d
       - --web.enable-lifecycle
@@ -25,6 +26,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-Admin!123}
+      - TZ=${TZ}
     volumes:
       - ./data/grafana:/var/lib/grafana
       - ./config/grafana:/etc/grafana/provisioning
@@ -37,6 +39,8 @@ services:
     image: oliver006/redis_exporter:latest
     container_name: redis-exporter
     restart: unless-stopped
+    environment:
+      - TZ=${TZ}
     command:
       - --redis.addr=redis://${REDIS_HOST:-localhost}:${REDIS_PORT:-6379}
       - --redis.password=${REDIS_PASSWORD:-}
@@ -51,7 +55,8 @@ services:
     container_name: rocketmq-exporter
     restart: unless-stopped
     environment:
-      - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-localhost:9876} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY:-} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY:-}
+      - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY:-} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY:-}
+      - TZ=${TZ}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
