@@ -22,7 +22,7 @@ services:
     depends_on:
       - init
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:-Asia/Shanghai}
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -42,7 +42,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-Admin!123}
-      - TZ=${TZ}
+      - TZ=${TZ:-Asia/Shanghai}
     volumes:
       - ./data/grafana:/var/lib/grafana
       - ./config/grafana:/etc/grafana/provisioning

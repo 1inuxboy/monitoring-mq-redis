@@ -6,39 +6,45 @@ services:
     container_name: redis-exporter-6379
     restart: unless-stopped
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:-Asia/Shanghai}
     command:
-      - --redis.addr=redis://${REDIS_HOST:-localhost:6379}
-      - --redis.password=${REDIS_PASSWORD:-}
+      - --redis.addr=redis://${REDIS_HOST_1:-localhost:6379}
+      - --redis.password=${REDIS_PASSWORD_1:-}
       - --export-client-port=9121
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "9121:9121"
+    profiles:
+      - all-redis-exporter
+      - redis-exporter-1
 
   redis-exporter-2:
     image: oliver006/redis_exporter:latest
     container_name: redis-exporter-6380
     restart: unless-stopped
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:-Asia/Shanghai}
     command:
-      - --redis.addr=redis://${REDIS_HOST:-localhost:6380}
-      - --redis.password=${REDIS_PASSWORD:-}
+      - --redis.addr=redis://${REDIS_HOST_2:-localhost:6380}
+      - --redis.password=${REDIS_PASSWORD_2:-}
       - --export-client-port=9122
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "9122:9122"
+    profiles:
+      - all-redis-exporter
+      - redis-exporter-2
 
   rocketmq-exporter:
     image: apache/rocketmq-exporter:latest
     container_name: rocketmq-exporter
     restart: unless-stopped
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:-Asia/Shanghai}
     command:
       - --rocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR:-}
       - --rocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE:-false}
@@ -49,3 +55,5 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "5557:5557"
+    profiles:
+      - rocketmq-exporter
