@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/prometheus:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    command:
+      - --redis.addr=redis://${REDIS_HOST}:${REDIS_PORT}
+      - --redis.password=${REDIS_PASSWORD}
+    networks:
+      - monitoring
+
+  rocketmq-exporter:
+    image: apache/rocketmq-exporter:latest
+    container_name: rocketmq-exporter
+    environment:
+      - JAVA_OPTS=-Drocketmq.config.namesrvAddr=${ROCKETMQ_NAMESRV_ADDR} -Drocketmq.config.enableACL=${ROCKETMQ_ACL_ENABLE} -Drocketmq.config.accessKey=${ROCKETMQ_ACL_ACCESS_KEY} -Drocketmq.config.secretKey=${ROCKETMQ_ACL_SECRET_KEY}
+    networks:
+      - monitoring
+
+networks:
+  monitoring: {}
+
+
