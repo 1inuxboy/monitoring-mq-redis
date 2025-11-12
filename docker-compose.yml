@@ -15,7 +15,7 @@ services:
     restart: "no"
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.7.3
     restart: unless-stopped
     container_name: prometheus
     network_mode: host
@@ -35,7 +35,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.0
     container_name: grafana
     restart: unless-stopped
     network_mode: host
